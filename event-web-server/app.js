@@ -88,32 +88,6 @@ app.post('/api/event', function(req, res, next){
   }
 });
 
-
-//URL Feeder
-app.post('/api/url_feeder', function(req, res, next){
-  console.log('Looking for POST data...');
-  var event = new Object();
-  event.userid = req.body.userid;
-  event.uri = req.body.uri;
-  event.crawl_depth = req.body.crawl_depth;
-
-  var payload_crawler = [{topic:topic_name_crawler , messages:event.uri+' '+event.crawl_depth}];
-
-  console.log('Sending to kafka...');
-  //Send to Kafka
-  if(producer) {
-    producer.send(payload_crawler, function (err, data) {
-      if (err) {
-        res.send(500, err);
-      } else {
-        res.send(200, 'Message is queued.');
-      }
-    });
-  } else {
-    res.send(500, 'Producer is not initialized');
-  }
-});
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

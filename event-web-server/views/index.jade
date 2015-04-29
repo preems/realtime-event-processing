@@ -2,11 +2,11 @@ extends layout
 
 block content
   h1(align='left') Crawler Feed
-  form(align="center",method='POST', action='/api/url_feeder')
+  form(align="center",method='POST', action='/api/event')
     .form-group.col-md-5
       input.form-control(type='text', name='uri', placeholder='URL')
       br
-      input.form-control(type='text', name='crawl_depth', placeholder='Crawl Depth')
+      input.form-control(type='text', name='task', placeholder='Task')
       br
       input.form-control(type='text', name='userid', placeholder='Unity ID')
       br
