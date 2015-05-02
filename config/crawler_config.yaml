@@ -11,7 +11,7 @@ elasticsearch.host.name: "las-goal-storm.oscar.priv"
 elasticsearch.host.port: 9300
 
 #Kafka URL Consumer
-kafka.topic.crawl.name: "urltopic"
+kafka.topic.crawl.name: "urlevent"
 kafka.consumer.host.name: "las-goal-web.oscar.priv"
 kafka.consumer.host.port: 2181
 
