@@ -2,9 +2,14 @@ package storm.crawler.function;
 
 import backtype.storm.tuple.Values;
 import org.json.simple.JSONObject;
+import storm.crawler.CrawlerConfig;
+import storm.crawler.filter.bloomfilter.RedisBloomFilter;
 import storm.trident.operation.BaseFunction;
 import storm.trident.operation.TridentCollector;
+import storm.trident.operation.TridentOperationContext;
 import storm.trident.tuple.TridentTuple;
+
+import java.util.Map;
 
 /**
  * Created by Sunil Kalmadka on 4/5/2015.
@@ -14,9 +19,9 @@ public class PrepareForElasticSearch extends BaseFunction {
 
     private String esIndex;
 
-    public PrepareForElasticSearch(String str) {
-        //The index of the ElasticSearch
-        this.esIndex=str;
+    @Override
+    public void prepare(Map conf, TridentOperationContext context) {
+        this.esIndex = conf.get(CrawlerConfig.ELASTICSEARCH_INDEX_NAME).toString();
     }
 
     @Override
