@@ -6,9 +6,13 @@ import os
 import requests
 import json
 
+if 'AUTH_TOKEN' not in os.environ:
+    print "Set AUTH_TOKEN env variable"
+    exit()
 
-KAFKA_TOPIC = "urltopic"
-CRAWL_DEPTH = 2
+
+KAFKA_TOPIC = os.environ['KAFKA_TOPIC_CRAWL']
+CRAWL_DEPTH = os.environ['CRAWL_DEFAULT_DEPTH']
 AUTH_TOKEN = os.environ['AUTH_TOKEN']
 SKYLR_URL = "https://las-skylr-token.oscar.ncsu.edu/api/data/document/query"
 

@@ -33,4 +33,4 @@ bloomfilter.falsePositive: 0.01
 crawl.depth: 3
 
 #Crawler Web Server
-web.server.port: 9080
+web.server.port: 3000
