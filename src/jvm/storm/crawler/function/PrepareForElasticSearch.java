@@ -31,7 +31,7 @@ public class PrepareForElasticSearch extends BaseFunction {
         String content_html = JSONObject.escape(tridentTuple.getString(1));
         String title = JSONObject.escape(tridentTuple.getString(2));
         String task = JSONObject.escape(tridentTuple.getString(3));
-        String user = JSONObject.escape(tridentTuple.getString(2));
+        String user = JSONObject.escape(tridentTuple.getString(4));
 
         // Create the JSON to be stored in ElasticSearch
         JSONObject json = new JSONObject();
