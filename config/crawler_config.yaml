@@ -9,6 +9,7 @@ topology.message.timeout.secs: 120
 elasticsearch.cluster.name: "elasticsearch"
 elasticsearch.host.name: "las-goal-storm.oscar.priv"
 elasticsearch.host.port: 9300
+elasticsearch.index.name: "crawl_index"
 
 #Kafka URL Consumer
 kafka.topic.crawl.name: "urlevent"
