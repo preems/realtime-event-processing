@@ -92,7 +92,7 @@ app.post('/api/event', function(req, res, next){
 });
 
 //DRPC Search Route
-app.get('/api/search', function(req, res, next){
+app.post('/api/search', function(req, res, next){
   console.log('/api/search: Looking for POST data...');
 
   var userid = req.body.userid;
