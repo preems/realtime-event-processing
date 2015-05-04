@@ -104,7 +104,21 @@ app.post('/api/search', function(req, res, next){
       console.error(err);
     } else {
       console.log("Storm DRPC Success");
-      res.send(200, JSON.stringify(response));
+
+      var searchResultArray = [];
+      var jsonResponse = JSON.parse(response);
+      for(var i = 0; i < jsonResponse.length; i++) {
+        var curResponse = jsonResponse[i];
+        var curSearchResult = curResponse[curResponse.length -1];
+        searchResultArray.push(curSearchResult)
+
+        console.log(JSON.stringify(curResponse));
+      }
+
+      console.log(JSON.stringify(searchResultArray));
+      res.render('search_result', {searchResult: searchResultArray}, function(err, html) {
+        res.send(200, JSON.stringify(searchResultArray));
+      })
     }
   });
 
