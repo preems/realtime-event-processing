@@ -155,7 +155,10 @@ app.get('/speech_service', function(req, res, next){
       voiceSearchResultObj.search_results = JSON.stringify(searchResultArray);
 
       console.log("searchResultArray"+ JSON.stringify(voiceSearchResultObj));
-      res.send(200, JSON.stringify(voiceSearchResultObj));
+      //res.send(200, JSON.stringify(voiceSearchResultObj));
+
+      res.render('search_result', {searchResult: searchResultArray});
+
     }
   });
 
