@@ -6,18 +6,12 @@ block scripts
       script(src='/javascripts/webspeech.js')
       script(type='text/javascript').
          $(document).ready(function() {
-            //Init
-            $.ajax({
-               type: "GET",
-               url: "/speech_service"
-            }).then(function(data) {
-               var greet = new SpeechSynthesisUtterance("Hi, What would you like to search for?");
-               speechSynthesis.speak(greet);
-            });
+            var greet = new SpeechSynthesisUtterance("Hi, What would you like to search for?");
+            speechSynthesis.speak(greet);
          });
 
 block content
-    ul.nav.nav-tabs
+   ul.nav.nav-tabs
       li(role='features')
          a(href='/') Search
       li(role='features')
@@ -25,7 +19,43 @@ block content
       li.active(role='features')
          a(href='/voice_search') Voice Search
 
-    h1(align='left') Voice Search
-   .form-group.col-md-5
-      button(onclick='reco.toggleStartStop()', style='border: 0; background-color:transparent')
-         img#status_img.page-scroll.btn.btn-xl(src='/images/mic.gif', alt='Start')
+   .container
+      .intro-text
+         .intro-heading Voice Search
+         .intro-lead-in What would you like to search for?
+         form#form1.form-group(method='get')
+            input#input_field.form-control(name='q')
+         button(onclick='reco.toggleStartStop()', style='border: 0; background-color:transparent')
+            img#status_img.page-scroll.btn.btn-xl(src='mic.gif', alt='Start')
+         #status
+         script.
+            var reco = new WebSpeechRecognition();
+            reco.statusText('status');
+            reco.statusImage('status_img');
+            reco.finalResults('input_field');
+            reco.onEnd = function() {
+               if (reco.final_transcript != '') {
+                  // input_field.form.submit();
+                  var input_value =  $('#input_field').val();
+                  $('.greeting-id').append("User: ");
+                  $('.greeting-id').append(input_value);
+                  $('.greeting-id').append("<br/>");
+                  //		alert(input_value);
+                  $.ajax({
+                     type: "GET",
+                     url: "/speech_service"+ input_value
+                  }).then(function(data) {
+                  //          	alert("Submit Response");
+                     var u = new SpeechSynthesisUtterance(data.outterance);
+                     speechSynthesis.speak(u);
+                     $('.intro-lead-in').html(data.outterance);
+                     $('.greeting-id').append("Search Engine: ");
+                     $('.greeting-id').append(data.outterance);
+                     $('.greeting-id').append("<br/>");
+                  });
+                  // reco.start();
+                  return false;
+               }
+            };
+
+
