@@ -1,14 +1,20 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET home page. */
+/* GET search page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { title: 'Search' });
 });
 
-/* GET home page. */
+/* GET url_feeder page. */
 router.get('/url_feeder', function(req, res, next) {
-  res.render('url_feeder', { title: 'Search' });
+  res.render('url_feeder', { title: 'URL Feeder' });
 });
+
+/* GET url_feeder page. */
+router.get('/voice_search', function(req, res, next) {
+  res.render('voice_search', { title: 'Voice Search' });
+});
+
 
 module.exports = router;

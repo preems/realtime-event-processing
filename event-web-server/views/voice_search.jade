@@ -1,0 +1,31 @@
+extends layout
+
+block scripts
+   script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js')
+      script(type='text/javascript', src='https://static.twilio.com/libs/twiliojs/1.1/twilio.min.js')
+      script(src='/javascripts/webspeech.js')
+      script(type='text/javascript').
+         $(document).ready(function() {
+            //Init
+            $.ajax({
+               type: "GET",
+               url: "/speech_service"
+            }).then(function(data) {
+               var greet = new SpeechSynthesisUtterance("Hi, What would you like to search for?");
+               speechSynthesis.speak(greet);
+            });
+         });
+
+block content
+    ul.nav.nav-tabs
+        li(role='features')
+            a(href='/') Search
+        li(role='features')
+            a(href='/url_feeder') URL Feeder
+       li.active(role='features')
+           a(href='/voice_search') Voice Search
+
+    h1(align='left') Voice Search
+   .form-group.col-md-5
+      button(onclick='reco.toggleStartStop()', style='border: 0; background-color:transparent')
+         img#status_img.page-scroll.btn.btn-xl(src='/images/mic.gif', alt='Start')

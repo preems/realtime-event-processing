@@ -99,7 +99,7 @@ app.post('/api/search', function(req, res, next){
   var searchQuery = req.body.searchQuery;
   var taskName =  req.body.taskName;
 
-  nodeDrpcClient.execute("search", searchQuery+' '+taskName, function(err, response) {//DRPC func_name, func_args, callback
+  nodeDrpcClient.execute("search", searchQuery+'~'+taskName, function(err, response) {//DRPC func_name, func_args, callback
     if (err) {
       console.error(err);
     } else {
