@@ -79,7 +79,6 @@ public class URLEventProcessingTopology {
         topology.newDRPCStream("search", localDrpc)
                 .each(new Fields("args"), new SplitDRPCArgs(), new Fields("query_input", "task"))
                 .each(new Fields("query_input"), new BingAutoSuggest(0), new Fields("query_preProcessed"))
-                .each(new Fields("query_preProcessed", "task"), new PrintFilter())
                 .each(new Fields("query_preProcessed", "task"), new PrepareSearchQuery(), new Fields("query", "indices", "types"))
                 .groupBy(new Fields("query", "indices", "types"))
                 .stateQuery(esStaticState, new Fields("query", "indices", "types"), new QuerySearchIndexQuery(), new Fields("results"))
@@ -108,7 +107,7 @@ public class URLEventProcessingTopology {
             LocalCluster localcluster = new LocalCluster();
             localcluster.submitTopology("url_event_processing",conf,buildTopology(conf, drpc));
 
-            String searchQuery = "Freddie crawl_test";
+            String searchQuery = "HoloLens crawl_test";
             System.out.println("---* Result: " + drpc.execute("search",  searchQuery));
         }
         else

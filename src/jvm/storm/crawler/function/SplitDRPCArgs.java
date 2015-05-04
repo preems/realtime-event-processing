@@ -13,8 +13,11 @@ public class SplitDRPCArgs extends BaseFunction {
     @Override
     public void execute(TridentTuple tridentTuple, TridentCollector tridentCollector) {
         String argsString = tridentTuple.getString(0);
-        String[] argsSplit = argsString.split(" ");
+        String[] argsSplit = argsString.split("~");
 
-        tridentCollector.emit(new Values(argsSplit[0], argsSplit[1]));
+        String queryString = argsSplit[0];
+        String taskName = (argsSplit[1] == null)? "" : argsSplit[1];
+
+        tridentCollector.emit(new Values(queryString, taskName));
     }
 }
