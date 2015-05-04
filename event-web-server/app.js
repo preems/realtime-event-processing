@@ -116,9 +116,10 @@ app.post('/api/search', function(req, res, next){
       }
 
       console.log("searchResultArray"+ JSON.stringify(searchResultArray));
-      res.render('search_result', {searchResult: searchResultArray}, function(err, html) {
+      res.render('search_result', {searchResult: searchResultArray});
+      /*res.render('search_result', {searchResult: searchResultArray}, function(err, html) {
         res.send(200, JSON.stringify(searchResultArray));
-      })
+      })*/
     }
   });
 
