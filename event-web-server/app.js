@@ -10,6 +10,10 @@ var routes = require('./routes/index');
 //Helper Objects
 var users = require('./users');
 
+//Storm DRPC
+var NodeDRPCClient = require('node-drpc');
+var nodeDrpcClient =  new  NodeDRPCClient( process.env.DRPC_SERVER_HOST,  parseInt(process.env.DRPC_SERVER_PORT, 10) );
+
 //Kafka
 var kafka = require('kafka-node'),
     Producer = kafka.Producer,
@@ -60,9 +64,8 @@ app.use('/api',function(req, res, next){
 });
 
 app.post('/api/event', function(req, res, next){
-  console.log('Looking for POST data...');
+  console.log('/api/event: Looking for POST data...');
   //Get event from post data
-  //Event : {type: file/url, uri:fileName/url, summary:<text>}
   var event = new Object();
   event.userid = req.body.userid;
   event.type = req.body.type;
@@ -84,8 +87,27 @@ app.post('/api/event', function(req, res, next){
       }
     });
   } else {
-    res.send(500, 'Producer is not initialized');
+    res.send(500, 'Unable to send to Kafka Producer');
   }
+});
+
+//DRPC Search Route
+app.post('/api/search', function(req, res, next){
+  console.log('/api/search: Looking for POST data...');
+
+  var userid = req.body.userid;
+  var searchQuery = req.body.searchQuery;
+  var taskName =  req.body.taskName;
+
+  nodeDrpcClient.execute("search", searchQuery+' '+taskName, function(err, response) {//DRPC func_name, func_args, callback
+    if (err) {
+      console.error(err);
+    } else {
+      console.log("Storm DRPC Success");
+      res.send(200, JSON.stringify(response));
+    }
+  });
+
 });
 
 // catch 404 and forward to error handler
