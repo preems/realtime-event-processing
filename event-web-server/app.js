@@ -112,10 +112,10 @@ app.post('/api/search', function(req, res, next){
         var curSearchResult = curResponse[curResponse.length -1];
         searchResultArray.push(curSearchResult)
 
-        console.log(JSON.stringify(curResponse));
+        console.log("curResponse"+ i + " : "+JSON.stringify(curResponse));
       }
 
-      console.log(JSON.stringify(searchResultArray));
+      console.log("searchResultArray"+ JSON.stringify(searchResultArray));
       res.render('search_result', {searchResult: searchResultArray}, function(err, html) {
         res.send(200, JSON.stringify(searchResultArray));
       })
