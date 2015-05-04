@@ -55,6 +55,11 @@ block content
                      speechSynthesis.speak(u);
                      $('.current_response').html("Found " + data.current_response + " result(s)");
                      $('.search_results').html(JSON.stringify(data.search_results, null, 2));
+                     $("#search_result_table").dataTable({
+                        "data": JSON.stringify(data.search_results),
+                        "destroy": true
+                     });
+
 
                   });
                   return false;
@@ -63,4 +68,6 @@ block content
 
    h3 Search Results
    br
-   p.search_results
+   .well
+      p.search_results
+   table#search_result_table
