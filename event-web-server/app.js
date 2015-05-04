@@ -152,14 +152,10 @@ app.get('/speech_service', function(req, res, next){
 
       var count =  (searchResultArray.length == 0)? "no" : searchResultArray.length;
       voiceSearchResultObj.current_response = "I found " +count+" related link(s) for your query";
-      voiceSearchResultObj.search_results = searchResultArray;
+      voiceSearchResultObj.search_results = new Array(searchResultArray);
 
       console.log("searchResultArray"+ voiceSearchResultObj);
-      //res.render('search_result', {searchResult: searchResultArray});
       res.send(200, voiceSearchResultObj);
-      /*res.render('search_result', {searchResult: searchResultArray}, function(err, html) {
-       res.send(200, JSON.stringify(searchResultArray));
-       })*/
     }
   });
 

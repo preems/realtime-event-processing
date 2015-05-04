@@ -2,13 +2,20 @@ extends layout
 
 block scripts
    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js')
-      script(type='text/javascript', src='https://static.twilio.com/libs/twiliojs/1.1/twilio.min.js')
-      script(src='/javascripts/webspeech.js')
-      script(type='text/javascript').
-         $(document).ready(function() {
-            var greet = new SpeechSynthesisUtterance("Hi, What would you like to search for?");
-            speechSynthesis.speak(greet);
-         });
+   script(type='text/javascript', src='https://static.twilio.com/libs/twiliojs/1.1/twilio.min.js')
+   script(src='/javascripts/webspeech.js')
+   script(type='text/javascript').
+      $(document).ready(function() {
+         var greet = new SpeechSynthesisUtterance("Hi, What would you like to search for?");
+         speechSynthesis.speak(greet);
+      });
+   script(type='text/javascript').
+      function linkFormatter(value) {
+         return '<a href="' + value + '">' + value + '</a>';
+      }
+      function snippetFormatter(value) {
+         return '<div class="panel panel-primary"> <div class="panel-body" style="max-height:100px;overflow-y: scroll;">' + value + '</div> </div>';
+      }
 
 block content
    ul.nav.nav-tabs
@@ -39,10 +46,6 @@ block content
                if (reco.final_transcript != '') {
                   // input_field.form.submit();
                   var input_value =  $('#input_field').val();
-                  $('.dialogue_responses').append("User: ");
-                  $('.dialogue_responses').append(input_value);
-                  $('.dialogue_responses').append("<br/>");
-                  //		alert(input_value);
                   $.ajax({
                      type: "GET",
                      url: "/speech_service?utterance="+ input_value
@@ -51,19 +54,29 @@ block content
                      var u = new SpeechSynthesisUtterance(data.current_response);
                      speechSynthesis.speak(u);
                      $('.current_response').html(data.current_response);
-                     $('.dialogue_responses').append("Search Engine: ");
-                     $('.dialogue_responses').append(data.search_results);
-                     $('.dialogue_responses').append("<br/>");
+                     $('#table').bootstrapTable({
+                        data: data.search_results
+                     });
+
                   });
                   return false;
                }
             };
-   .panel.panel-info
+
+   h3 Search Results
+   br
+   .panel.panel-primary
       .panel-heading
-         h3.panel-title Results
+         h3.panel-title Search Result
       .panel-body
-         .well
-            p.dialogue_responses
+         table#table(data-pagination='true')
+            thead
+               tr
+                  th(data-field='title') Title
+                  th(data-field='url' data-formatter="linkFormatter") URL
+                  th(data-field='content' data-formatter="snippetFormatter") Contnet
+                  th(data-field='task' ) Task
+                  th(data-field='user' ) User
 
 
 
