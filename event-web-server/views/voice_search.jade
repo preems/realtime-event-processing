@@ -55,9 +55,9 @@ block content
                      speechSynthesis.speak(u);
                      $('.current_response').html(data.current_response);
                      $('#table').bootstrapTable({
-                        data: data.search_results
+                        data: JSON.parse(data.search_results)
                      });
-
+                     alert(data.search_results);
                   });
                   return false;
                }

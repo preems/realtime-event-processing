@@ -152,7 +152,7 @@ app.get('/speech_service', function(req, res, next){
 
       var count =  (searchResultArray.length == 0)? "no" : searchResultArray.length;
       voiceSearchResultObj.current_response = "I found " +count+" related link(s) for your query";
-      voiceSearchResultObj.search_results = new Array(searchResultArray);
+      voiceSearchResultObj.search_results = JSON.stringify(searchResultArray);
 
       console.log("searchResultArray"+ voiceSearchResultObj);
       res.send(200, voiceSearchResultObj);
