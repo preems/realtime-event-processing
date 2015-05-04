@@ -125,6 +125,47 @@ app.post('/api/search', function(req, res, next){
 
 });
 
+
+//Voice Search
+app.get('/speech_service', function(req, res, next){
+  console.log('/speech_service: Looking for GET data...');
+
+  var user_utterance = req.query.utterance;
+  var taskName =  "event_test";
+  console.log('/speech_service:'+user_utterance);
+  nodeDrpcClient.execute("search", user_utterance+'~'+taskName, function(err, response) {//DRPC func_name, func_args, callback
+    if (err) {
+      console.error(err);
+    } else {
+      console.log("Storm DRPC Success");
+
+      var voiceSearchResultObj = new Object();
+      var searchResultArray = [];
+      var jsonResponse = JSON.parse(response);
+      for(var i = 0; i < jsonResponse.length; i++) {
+        var curResponse = jsonResponse[i];
+        var curSearchResult = curResponse[curResponse.length -1];
+        searchResultArray.push(curSearchResult)
+
+        console.log("curResponse"+ i + " : "+JSON.stringify(curResponse));
+      }
+
+      var count =  (searchResultArray.length == 0)? "no" : searchResultArray.length;
+      voiceSearchResultObj.current_response = "I found " +count+" related link(s) for your query";
+      voiceSearchResultObj.search_results = searchResultArray;
+
+      console.log("searchResultArray"+ voiceSearchResultObj);
+      //res.render('search_result', {searchResult: searchResultArray});
+      res.send(200, voiceSearchResultObj);
+      /*res.render('search_result', {searchResult: searchResultArray}, function(err, html) {
+       res.send(200, JSON.stringify(searchResultArray));
+       })*/
+    }
+  });
+
+});
+
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

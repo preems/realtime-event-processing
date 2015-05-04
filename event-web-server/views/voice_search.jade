@@ -19,14 +19,16 @@ block content
       li.active(role='features')
          a(href='/voice_search') Voice Search
 
-   .container
-      .intro-text
-         .intro-heading Voice Search
-         .intro-lead-in What would you like to search for?
+   .panel.panel-info
+      .panel-heading
+         h3.panel-title Voice Search
+      .panel-body
+         .well
+            p.current_response What would you like to search for?
          form#form1.form-group(method='get')
             input#input_field.form-control(name='q')
          button(onclick='reco.toggleStartStop()', style='border: 0; background-color:transparent')
-            img#status_img.page-scroll.btn.btn-xl(src='mic.gif', alt='Start')
+            img#status_img.page-scroll.btn.btn-xl(src='/images/mic.gif', alt='Start')
          #status
          script.
             var reco = new WebSpeechRecognition();
@@ -37,25 +39,31 @@ block content
                if (reco.final_transcript != '') {
                   // input_field.form.submit();
                   var input_value =  $('#input_field').val();
-                  $('.greeting-id').append("User: ");
-                  $('.greeting-id').append(input_value);
-                  $('.greeting-id').append("<br/>");
+                  $('.dialogue_responses').append("User: ");
+                  $('.dialogue_responses').append(input_value);
+                  $('.dialogue_responses').append("<br/>");
                   //		alert(input_value);
                   $.ajax({
                      type: "GET",
-                     url: "/speech_service"+ input_value
+                     url: "/speech_service?utterance="+ input_value
                   }).then(function(data) {
-                  //          	alert("Submit Response");
-                     var u = new SpeechSynthesisUtterance(data.outterance);
+                     //alert("Submit Response");
+                     var u = new SpeechSynthesisUtterance(data.current_response);
                      speechSynthesis.speak(u);
-                     $('.intro-lead-in').html(data.outterance);
-                     $('.greeting-id').append("Search Engine: ");
-                     $('.greeting-id').append(data.outterance);
-                     $('.greeting-id').append("<br/>");
+                     $('.current_response').html(data.current_response);
+                     $('.dialogue_responses').append("Search Engine: ");
+                     $('.dialogue_responses').append(data.search_results);
+                     $('.dialogue_responses').append("<br/>");
                   });
-                  // reco.start();
                   return false;
                }
             };
+   .panel.panel-info
+      .panel-heading
+         h3.panel-title Results
+      .panel-body
+         .well
+            p.dialogue_responses
+
 
 
