@@ -139,7 +139,6 @@ app.get('/speech_service', function(req, res, next){
     } else {
       console.log("Storm DRPC Success");
 
-      var voiceSearchResultObj = new Object();
       var searchResultArray = [];
       var jsonResponse = JSON.parse(response);
       for(var i = 0; i < jsonResponse.length; i++) {
@@ -151,13 +150,11 @@ app.get('/speech_service', function(req, res, next){
       }
 
       var count =  (searchResultArray.length == 0)? "no" : searchResultArray.length;
-      voiceSearchResultObj.current_response = "I found " +count+" related link(s) for your query";
-      voiceSearchResultObj.search_results = JSON.stringify(searchResultArray);
 
-      console.log("searchResultArray"+ JSON.stringify(voiceSearchResultObj));
-      //res.send(200, JSON.stringify(voiceSearchResultObj));
+      console.log("searchResultArray"+ JSON.stringify(searchResultArray));
+      res.send(200, {current_response:count, search_results: searchResultArray});
 
-      res.render('search_result', {searchResult: searchResultArray});
+      //res.render('search_result', {searchResult: searchResultArray});
 
     }
   });
