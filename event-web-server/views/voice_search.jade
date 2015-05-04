@@ -51,15 +51,11 @@ block content
                      url: "/speech_service?utterance="+ input_value
                   }).then(function(data) {
                      //alert("Submit Response");
-                     var u = new SpeechSynthesisUtterance(data.current_response);
+                     var u = new SpeechSynthesisUtterance("Found " + data.current_response + " result(s)");
                      speechSynthesis.speak(u);
-                     $('.current_response').html(data.current_response);
-                     $('.current_response').html(data.current_response);
+                     $('.current_response').html("Found " + data.current_response + " result(s)");
+                     $('.search_results').html(JSON.stringify(data.search_results, null, 2));
 
-                     $('#table').bootstrapTable({
-                        destroy: true,
-                        data: JSON.stringify(data.search_results)
-                     });
                   });
                   return false;
                }
@@ -67,18 +63,4 @@ block content
 
    h3 Search Results
    br
-   .panel.panel-primary
-      .panel-heading
-         h3.panel-title Search Result
-      .panel-body
-         table#table(data-pagination='true')
-            thead
-               tr
-                  th(data-field='title') Title
-                  th(data-field='url' data-formatter="linkFormatter") URL
-                  th(data-field='content' data-formatter="snippetFormatter") Contnet
-                  th(data-field='task' ) Task
-                  th(data-field='user' ) User
-
-
-
+   p.search_results
