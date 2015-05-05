@@ -21,6 +21,8 @@ public final class CrawlerConfig {
 
     public static final String KAFKA_TOPIC_NAME = "kafka.topic.crawl.name";
 
+    public static final String KAFKA_TOPIC_DOCUMENT_NAME = "kafka.topic.document.name";
+
     public static final String KAFKA_CONSUMER_HOST_NAME = "kafka.consumer.host.name";
 
     public static final String KAFKA_CONSUMER_HOST_PORT = "kafka.consumer.host.port";

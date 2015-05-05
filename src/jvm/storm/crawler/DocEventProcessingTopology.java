@@ -37,19 +37,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Sunil Kalmadka on 4/5/2015.
- * Modified by Preetham MS on 4/20/2015.
+ * Created by Preetham MS on 5/5/15.
  */
+public class DocEventProcessingTopology {
 
-public class URLEventProcessingTopology {
-    public static StormTopology buildTopology(Config conf, LocalDRPC localDrpc) {
+    public static StormTopology buildTopology(Config conf, LocalDRPC drpc) {
+
         TridentTopology topology = new TridentTopology();
 
         //Kafka Spout
         BrokerHosts zk = new ZkHosts(conf.get(CrawlerConfig.KAFKA_CONSUMER_HOST_NAME) + ":" +conf.get(CrawlerConfig.KAFKA_CONSUMER_HOST_PORT));
-        TridentKafkaConfig kafkaConfig = new TridentKafkaConfig(zk, (String) conf.get(CrawlerConfig.KAFKA_TOPIC_NAME));
+        TridentKafkaConfig kafkaConfig = new TridentKafkaConfig(zk, (String) conf.get(CrawlerConfig.KAFKA_TOPIC_DOCUMENT_NAME));
         kafkaConfig.scheme = new SchemeAsMultiScheme(new StringScheme());
-        //kafkaConfig.ignoreZkOffsets=true;
         OpaqueTridentKafkaSpout spout = new OpaqueTridentKafkaSpout(kafkaConfig);
 
         //ElasticSearch Persistent State
@@ -60,36 +59,17 @@ public class URLEventProcessingTopology {
         StateFactory esStateFactory = new ESIndexState.Factory<JSONObject>(new ClientFactory.NodeClient(esSettings.getAsMap()), JSONObject.class);
         TridentState esStaticState = topology.newStaticState(esStateFactory);
 
-        //Topology
-        topology.newStream("crawlKafkaSpout", spout).parallelismHint(5)
-                //Splits words on receiving from Kafka
-                .each(new Fields("str"), new SplitFunction(), new Fields("url", "depth", "task", "user"))
-                .each(new Fields("str"), new PrintFilter("Kafka"))
-                //Bloom Filter, Filters already crawled URLs
-                .each(new Fields("url", "task"), new URLFilter())
-                //Download and Parse Webpage
-                .each(new Fields("url"), new GetAdFreeWebPage(), new Fields("content_html", "title", "href"))
-                //Sending URLs present in the page into the kafka queue.
-                .each(new Fields("href", "depth", "task", "user"), new KafkaProducerFilter())
-                //Insert to Elasticsearch
-                .each(new Fields("url", "content_html", "title", "task", "user"), new PrepareForElasticSearch(), new Fields("index", "type", "id", "source"))
-                .partitionPersist(esStateFactory, new Fields("index", "type", "id", "source"), new ESIndexUpdater<String>(new ESTridentTupleMapper()), new Fields())
-                ;
-
-        //DRPC
-        topology.newDRPCStream("search", localDrpc)
-                .each(new Fields("args"), new SplitDRPCArgs(), new Fields("query_input", "task"))
-                .each(new Fields("query_input"), new BingAutoSuggest(0), new Fields("query_preProcessed"))
-                .each(new Fields("query_preProcessed", "task"), new PrepareSearchQuery(), new Fields("query", "indices", "types"))
-                .groupBy(new Fields("query", "indices", "types"))
-                .stateQuery(esStaticState, new Fields("query", "indices", "types"), new QuerySearchIndexQuery(), new Fields("results"))
-                ;
+        String esIndex = (String)(conf.get(CrawlerConfig.ELASTICSEARCH_INDEX_NAME));
+        topology.newStream("docstream",spout)
+                .each( new Fields("str"), new SplitDocStreamArgs(), new Fields("filename", "task", "user", "content"))
+                .each( new Fields("filename", "task", "user"), new PrintFilter("Kafka"))
+                .each( new Fields("filename","task","user","content"), new PrepareDocForElasticSearch(), new Fields("index","type","id","source") )
+                .partitionPersist(esStateFactory, new Fields("index","type","id","source"), new ESIndexUpdater<String>(new ESTridentTupleMapper()), new Fields());
 
         return topology.build();
     }
 
-    public static void main(String[] args) throws Exception {
-
+    public static void main(String[] args) throws Exception{
         if(args.length != 2){
             System.err.println("[ERROR] Configuration File Required");
         }
@@ -106,15 +86,14 @@ public class URLEventProcessingTopology {
         {
             LocalDRPC drpc = new LocalDRPC();
             LocalCluster localcluster = new LocalCluster();
-            localcluster.submitTopology("url_event_processing",conf,buildTopology(conf, drpc));
+            localcluster.submitTopology("doc_event_processing",conf,buildTopology(conf, drpc));
 
             String searchQuery = "HoloLens crawl_test";
             System.out.println("---* Result: " + drpc.execute("search",  searchQuery));
         }
         else
         {
-            StormSubmitter.submitTopologyWithProgressBar("url_event_processing", conf, buildTopology(conf, null));
+            StormSubmitter.submitTopologyWithProgressBar("doc_event_processing", conf, buildTopology(conf, null));
         }
     }
-
 }

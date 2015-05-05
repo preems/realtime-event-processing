@@ -17,6 +17,7 @@ elasticsearch.index.name: "crawl_index"
 
 #Kafka URL Consumer
 kafka.topic.crawl.name: "urlevent"
+kafka.topic.document.name: "docevent"
 kafka.consumer.host.name: "las-goal-web.oscar.priv"
 kafka.consumer.host.port: 2181
 

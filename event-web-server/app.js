@@ -22,6 +22,7 @@ var kafka = require('kafka-node'),
 
 var topic_name_crawler = process.env.KAFKA_TOPIC_CRAWL;
 var crawl_depth =  process.env.CRAWL_DEFAULT_DEPTH;
+var topic_name_doc = process.env.KAFKA_TOPIC_DOC;
 
 producer.on('ready', function () {
   console.log('Kafka Producer Ready');
@@ -124,6 +125,33 @@ app.post('/api/search', function(req, res, next){
   });
 
 });
+
+//Doc Event
+app.post('/api/docevent', function(req,res,next) {
+//  var filename = req.body.filename;
+//  var task = req.body.task;
+//  var user = req.body.user;
+//  var content = req.body.content;
+
+  var message = [{topic:topic_name_doc , messages: req.body}];
+
+  console.log('Sending to kafka...');
+  //Send to Kafka
+  if(producer) {
+    producer.send(message, function (err, data) {
+      if (err) {
+        res.send(500, err);
+      } else {
+        res.send(200, 'Message is queued.');
+      }
+    });
+  } else {
+    res.send(500, 'Unable to send to Kafka Producer');
+  }
+});
+
+
+//});
 
 
 //Voice Search

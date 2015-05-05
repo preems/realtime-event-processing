@@ -19,6 +19,7 @@ with open('setEnv.sh','w') as out:
     out.write('\nexport KAFKA_ZK_HOST=' + conf['kafka.consumer.host.name']+":"+str(conf['kafka.consumer.host.port']))
     out.write('\nexport DRPC_SERVER_HOST=' + conf['drpc.host.name'])
     out.write('\nexport DRPC_SERVER_PORT='+ str(conf['drpc.host.port']))
+    out.write('\nexport KAFKA_TOPIC_DOC=]'+ conf['kafka.topic.document.name'])
 
 #os.environ['CRAWL_DEFAULT_DEPTH']=str(conf['crawl.depth'])
 #os.environ['KAFKA_TOPIC_CRAWL']=conf['kafka.topic.crawl.name']
