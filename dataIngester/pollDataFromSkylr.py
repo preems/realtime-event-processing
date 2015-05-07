@@ -16,7 +16,7 @@ CRAWL_DEPTH = os.environ['CRAWL_DEFAULT_DEPTH']
 AUTH_TOKEN = os.environ['AUTH_TOKEN']
 SKYLR_URL = "https://las-skylr-token.oscar.ncsu.edu/api/data/document/query"
 
-kafka =  KafkaClient("localhost:9092")
+kafka =  KafkaClient(os.environ['KAFKA_PRODUCER_HOST'])
 producer = SimpleProducer(kafka)
 
 #startTime=(int(datetime.datetime.now().strftime("%s")) - 60*60*24*3)*1000
