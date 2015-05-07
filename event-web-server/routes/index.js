@@ -11,9 +11,14 @@ router.get('/url_feeder', function(req, res, next) {
   res.render('url_feeder', { title: 'URL Feeder' });
 });
 
-/* GET url_feeder page. */
+/* GET voice_search page. */
 router.get('/voice_search', function(req, res, next) {
   res.render('voice_search', { title: 'Voice Search' });
+});
+
+/* GET task_summary page. */
+router.get('/task_summary', function(req, res, next) {
+  res.render('index', { title: 'Task Summary' });
 });
 
 

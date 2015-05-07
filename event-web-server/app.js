@@ -60,7 +60,7 @@ app.use('/api',function(req, res, next){
   // key is invalid
   if (!~users[userid]) return next(error(401, 'invalid user'));
 
-  // all good, store req.key for route access
+  // all good
   next();
 });
 
@@ -151,7 +151,38 @@ app.post('/api/docevent', function(req,res,next) {
 });
 
 
-//});
+//DRPC Search Route
+app.post('/api/task_summary', function(req, res, next){
+  console.log('/api/task_summary: Looking for POST data...');
+
+  var userid = req.body.userid;
+  var taskName =  req.body.taskName;
+
+  nodeDrpcClient.execute("task_summary", taskName, function(err, response) {//DRPC func_name, func_args, callback
+    if (err) {
+      console.error(err);
+    } else {
+      console.log("Storm DRPC Success (task_summary)");
+
+      var searchResultArray = [];
+      var jsonResponse = JSON.parse(response);
+      for(var i = 0; i < jsonResponse.length; i++) {
+        var curResponse = jsonResponse[i];
+        var curSearchResult = curResponse[curResponse.length -1];
+        searchResultArray.push(curSearchResult)
+
+        console.log("curResponse"+ i + " : "+JSON.stringify(curResponse));
+      }
+
+      console.log("task_summary"+ JSON.stringify(searchResultArray));
+      res.render('task_summary', {searchResult: searchResultArray});
+      /*res.render('search_result', {searchResult: searchResultArray}, function(err, html) {
+       res.send(200, JSON.stringify(searchResultArray));
+       })*/
+    }
+  });
+
+});
 
 
 //Voice Search
