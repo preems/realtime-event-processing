@@ -1,6 +1,6 @@
 extends layout
 block content
-    ul.nav.nav-tabs
+   ul.nav.nav-tabs
       li(role='features')
          a(href='/') Search
       li(role='features')
@@ -9,8 +9,7 @@ block content
         a(href='/task_summary') Task Summary
       li(role='features')
          a(href='/voice_search') Voice Search
-    h1(align='left') URL Feeder
-   h1(align='left') Search
+   h1(align='left') Task Summary
 
    form(align="center",method='POST', action='/api/task_summary')
    .form-group.col-md-5
