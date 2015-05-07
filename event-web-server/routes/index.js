@@ -18,7 +18,7 @@ router.get('/voice_search', function(req, res, next) {
 
 /* GET task_summary page. */
 router.get('/task_summary', function(req, res, next) {
-  res.render('index', { title: 'Task Summary' });
+  res.render('task_summary', { title: 'Task Summary' });
 });
 
 

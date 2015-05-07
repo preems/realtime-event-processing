@@ -1,14 +1,14 @@
 extends layout
 block content
     ul.nav.nav-tabs
-        li(role='features')
-            a(href='/') Search
-        li(role='features')
-            a(href='/url_feeder') URL Feeder
-       li.active(role='features')
-           a(href='/task_summary') Task Summary
-        li(role='features')
-            a(href='/voice_search') Voice Search
+      li(role='features')
+         a(href='/') Search
+      li(role='features')
+         a(href='/url_feeder') URL Feeder
+      li.active(role='features')
+        a(href='/task_summary') Task Summary
+      li(role='features')
+         a(href='/voice_search') Voice Search
     h1(align='left') URL Feeder
     form(align="center",method='POST', action='/api/event')
         .form-group.col-md-5
