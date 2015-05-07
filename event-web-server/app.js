@@ -175,7 +175,8 @@ app.post('/api/task_summary', function(req, res, next){
       }
 
       console.log("task_summary"+ JSON.stringify(searchResultArray));
-      res.render('task_summary', {searchResult: searchResultArray});
+      //res.render('task_summary_result', {searchResult: searchResultArray});
+      res.send(200, JSON.stringify(searchResultArray));
       /*res.render('search_result', {searchResult: searchResultArray}, function(err, html) {
        res.send(200, JSON.stringify(searchResultArray));
        })*/
