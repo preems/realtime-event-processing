@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var fs = require('fs');
 
 var routes = require('./routes/index');
 
@@ -13,6 +14,8 @@ var users = require('./users');
 //Storm DRPC
 var NodeDRPCClient = require('node-drpc');
 var nodeDrpcClient =  new  NodeDRPCClient( process.env.DRPC_SERVER_HOST,  parseInt(process.env.DRPC_SERVER_PORT, 10) );
+
+var fileStoragePath = '/tmp/journaling-files/';
 
 //Kafka
 var kafka = require('kafka-node'),
@@ -55,10 +58,10 @@ app.use('/api',function(req, res, next){
   var userid = req.body.userid;
 
   // userid isn't present
-  if (!userid) return next(error(400, 'api userid required'));
+  //if (!userid) return next(error(400, 'api userid required'));
 
   // key is invalid
-  if (!~users[userid]) return next(error(401, 'invalid user'));
+  //if (!~users[userid]) return next(error(401, 'invalid user'));
 
   // all good
   next();
@@ -130,10 +133,15 @@ app.post('/api/search', function(req, res, next){
 app.post('/api/docevent', function(req,res,next) {
 //  var filename = req.body.filename;
 //  var task = req.body.task;
-//  var user = req.body.user;
+//  var userid = req.body.userid;
 //  var content = req.body.content;
+ var data = "";
+ req.on('data', function (chunk) {
+    data += chunk;
+ });
 
-  var message = [{topic:topic_name_doc , messages: req.body}];
+ req.on('end',function() {
+  var message = [{topic:topic_name_doc , messages: data}];
 
   console.log('Sending to kafka...');
   //Send to Kafka
@@ -148,7 +156,45 @@ app.post('/api/docevent', function(req,res,next) {
   } else {
     res.send(500, 'Unable to send to Kafka Producer');
   }
+
+ });
 });
+
+
+app.post('/api/storefile', function(req,res,err) {
+
+  var data = "";
+  req.on('data', function (chunk) {
+    data += chunk;
+  });
+  req.on('end', function () {
+    //console.log('POSTed: ' + data);
+    data = JSON.parse(data);
+    //console.log(data.userid);
+    fs.writeFile(fileStoragePath+data.userid+"_"+data.filename,JSON.stringify(data),function(err) {
+      if(err) {
+        console.log("File save failed"+err);
+        res.status(500).send(err);
+      }
+      else 
+      {
+        res.status(200).send('File saved.');
+      }
+    });
+  });
+
+
+  /*req.on('data', function(data) {
+      console.log(data);
+      fs.writeFile(fileStoragePath+data.userid+"_"+data.filename,data,function(err) {
+        res.send(500,err);
+      });
+  });*/
+
+  
+});
+
+
 
 
 //DRPC Search Route
